@@ -1,0 +1,54 @@
+Imports System.IO
+
+Module mdlfiledate
+
+    Function file_cd(ByVal filename As String) As DateTime
+        file_cd = File.GetCreationTime(filename)
+        Return file_cd
+    End Function
+
+    Function file_la(ByVal filename As String) As DateTime
+        file_la = File.GetLastAccessTime(filename)
+        Return file_la
+    End Function
+
+    Function file_lw(ByVal filename As String) As DateTime
+        file_lw = File.GetLastWriteTime(filename)
+        Return file_lw
+    End Function
+
+    Function vol(ByVal filename As String) As String
+        Dim cdatetime As DateTime = File.GetCreationTime(filename)
+        Dim hex_cmon As String = Hex(CInt(cdatetime.Month))
+        Dim hex_cday As String = Hex(CInt(cdatetime.Day))
+        Dim hex_csec As String = Hex(CInt(cdatetime.Second))
+        Dim hex_cms As String = Hex(CInt(Int((cdatetime.Millisecond / 10))))
+        Dim hex_chour As String = Hex(CInt(cdatetime.Hour))
+        Dim hex_cmin As String = Hex(CInt(cdatetime.Minute))
+        Dim hex_cyr As String = Hex(CInt(cdatetime.Year))
+
+        Dim hex_cmon_cday As String = hex_cmon & hex_cday
+        Dim hex_csec_cms As String = hex_csec & hex_cms
+        Dim hex_chour_cmin As String = hex_chour & hex_cmin
+        ' Dim hex_cyr As String = Hex(CInt(cdatetime.Year))
+
+        Dim vol_1, vol_2, vol_3, vol_4, vol_12, vol_34 As Long
+        vol_1 = CLng("&H" & hex_cmon_cday)
+        vol_2 = CLng("&H" & hex_csec_cms)
+        vol_3 = CLng("&H" & hex_chour_cmin)
+        vol_4 = CLng("&H" & hex_cyr)
+        vol_12 = vol_1 + vol_2
+        vol_34 = vol_3 + vol_4
+
+        Dim first_sum As String = Hex(vol_12)
+        Dim second_sum As String = Hex(vol_34)
+        If Len(first_sum) = 3 Then
+            first_sum = 0 & first_sum
+        End If
+        If Len(second_sum) = 3 Then
+            second_sum = 0 & second_sum
+        End If
+        vol = first_sum & "-" & second_sum
+    End Function
+
+End Module
